@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatMiniFabButton } from '@angular/material/button';
-import { TodoTaskItem } from '../../interfaces/todo.interface';
+import { ITodoTaskItem } from '../../interfaces/todo.interface';
 
 @Component({
     selector: 'otus-todo-list-item',
@@ -14,8 +14,8 @@ import { TodoTaskItem } from '../../interfaces/todo.interface';
     styleUrl: './todo-list-item.component.scss'
 })
 export class TodoListItemComponent {
-    @Input({ required: true }) todoTaskItem!: TodoTaskItem;
-    @Output() deleteToDoTaskItem = new EventEmitter<number>;
+    @Input({ required: true }) todoTaskItem!: ITodoTaskItem;
+    @Output() deleteToDoTaskItem: EventEmitter<number> = new EventEmitter<number>;
 
     deleteTodoItem(taskId: number): void {
         this.deleteToDoTaskItem.emit(taskId)
