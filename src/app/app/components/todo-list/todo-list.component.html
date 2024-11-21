@@ -1,32 +1,32 @@
-<mat-card class="todo-list__card">
-    <mat-card-header>
-        <mat-card-title class="todo-list__title">ToDoList</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-        <ul class="todo-list">
-            @for (todoTaskItem of todoTaskItems; track todoTaskItem.id) {
-                <li class="todo-list__task">
-                    <otus-todo-list-item
-                        [todoTaskItem]="todoTaskItem"
-                        (deleteToDoTaskItem)="deleteToDoTaskItem($event)"
-                    ></otus-todo-list-item>
-                </li>
-            }
-        </ul>
-    </mat-card-content>
-    <mat-card-actions class="todo-list__actions">
-        <mat-form-field appearance="outline">
-            <mat-label>Add your new todo</mat-label>
-            <input [(ngModel)]="newTodoTask" matInput>
-        </mat-form-field>
-        <button
-            mat-flat-button
-            type="button"
-            class="button button--add"
-            [disabled]="!newTodoTask.trim()"
-            (click)="addToDoTaskItem()"
-        >
-            Add task
-        </button>
-    </mat-card-actions>
-</mat-card>
+@if (isLoading){
+    <mat-card class="todo-list__card">
+        <mat-card-header>
+            <mat-card-title class="todo-list__title">{{ todoListTitle }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <ul class="todo-list">
+                @for (todoTaskItem of todoTaskItems; track todoTaskItem.id) {
+                    <li class="todo-list__task">
+                        <otus-todo-list-item
+                            [todoTaskItem]="todoTaskItem"
+                            (deleteToDoTaskItem)="deleteToDoTaskItem($event)"
+                        ></otus-todo-list-item>
+                    </li>
+                }
+            </ul>
+        </mat-card-content>
+        <mat-card-actions class="todo-list__actions">
+            <mat-form-field appearance="outline">
+                <mat-label>Add your new todo</mat-label>
+                <input [(ngModel)]="newTodoTask" matInput>
+            </mat-form-field>
+            <otus-button
+                [button]="addButton"
+                [disabled]="!newTodoTask.trim()"
+                (click)="addToDoTaskItem()"
+            ></otus-button>
+        </mat-card-actions>
+    </mat-card>
+} @else {
+  <otus-spinner></otus-spinner>
+}
