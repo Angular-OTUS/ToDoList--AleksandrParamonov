@@ -9,6 +9,6 @@ import { NgStyle } from '@angular/common';
     styleUrl: './button.component.scss'
 })
 export class ButtonComponent {
-    @Input() button!: ITodoButton;
+    @Input() button?: ITodoButton;
     @Input() disabled?: boolean = false;
 }
