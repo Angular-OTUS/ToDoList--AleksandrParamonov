@@ -1,6 +1,7 @@
 export interface ITodoTaskItem {
     id: number;
-    text: string;
+    title: string;
+    description?: string;
 }
 
 export interface ITodoButton {
