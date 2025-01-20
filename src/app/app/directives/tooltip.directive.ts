@@ -9,10 +9,13 @@ import { MatTooltip } from '@angular/material/tooltip';
 export class TooltipDirective implements OnInit, OnDestroy {
     @Input('otusTooltip') tooltipText?: string;
 
-    constructor(private readonly matTooltip: MatTooltip) { this.matTooltip.position = 'below'; }
+    constructor(private readonly matTooltip: MatTooltip) {}
 
     ngOnInit() {
-        if (this.tooltipText) this.matTooltip.message = this.tooltipText;
+        if (this.tooltipText) {
+            this.matTooltip.message = this.tooltipText;
+        }
+        this.matTooltip.position = 'below';
     }
 
     @HostListener('mouseenter') onMouseEnter() {

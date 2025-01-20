@@ -1,8 +1,5 @@
-<div class="todo-list-item" (click)="setSelectedTodoItem(todoTaskItem?.id)">
+<div class="todo-list-item" [ngClass]="{ 'selected': isSelected }" (click)="setSelectedTodoItem(todoTaskItem?.id)">
     <span class="title" [otusTooltip]="'Click on a task to see its description'">{{ todoTaskItem?.title }}</span>
-    <otus-button
-        [button]="deleteButton"
-        [otusTooltip]="'To delete, click the button'"
-        (click)="deleteTodoItem($event, todoTaskItem?.id)"
-    ></otus-button>
+    <otus-button [button]="deleteButton" [otusTooltip]="'To delete, click the button'"
+        (click)="deleteTodoItem($event, todoTaskItem?.id)"></otus-button>
 </div>

@@ -54,7 +54,7 @@ export class TodoListComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        setTimeout(()=> this.isLoading = false,500)
+        setTimeout(() => this.isLoading = false, 500)
     }
 
     deleteToDoTaskItem(taskId: number): void {
@@ -63,9 +63,7 @@ export class TodoListComponent implements OnInit {
 
     addToDoTaskItem(): void {
         const id = 1 + Math.max(0, ...this.todoTaskItems.map(item => item.id));
-        const title = this.newTodoTaskTitle;
-        const description = this.newTodoTaskDescription;
-        this.todoTaskItems.push({ id, title, description });
+        this.todoTaskItems.push({ id, title: this.newTodoTaskTitle, description: this.newTodoTaskDescription });
         this.newTodoTaskTitle = '';
         this.newTodoTaskDescription = '';
     }

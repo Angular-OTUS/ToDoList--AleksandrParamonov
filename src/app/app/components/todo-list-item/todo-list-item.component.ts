@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatMiniFabButton } from '@angular/material/button';
-import { ITodoButton, ITodoTaskItem} from '../../interfaces/todo.interface';
+import { ITodoButton, ITodoTaskItem } from '../../interfaces/todo.interface';
 import { ButtonComponent } from '../button/button.component';
 import { TooltipDirective } from '../../directives/tooltip.directive';
+import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'otus-todo-list-item',
@@ -12,13 +13,15 @@ import { TooltipDirective } from '../../directives/tooltip.directive';
         MatIcon,
         MatMiniFabButton,
         ButtonComponent,
-        TooltipDirective
+        TooltipDirective,
+        NgClass
     ],
     templateUrl: './todo-list-item.component.html',
     styleUrl: './todo-list-item.component.scss'
 })
 export class TodoListItemComponent {
     @Input({ required: true }) todoTaskItem?: ITodoTaskItem;
+    @Input() isSelected?: boolean = false;
     @Output() deleteToDoTaskItem: EventEmitter<number> = new EventEmitter<number>;
     @Output() setSelectedToDoTaskItem: EventEmitter<number> = new EventEmitter<number>();
 
