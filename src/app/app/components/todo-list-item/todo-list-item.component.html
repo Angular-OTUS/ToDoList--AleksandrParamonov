@@ -1,5 +1,28 @@
-<div class="todo-list-item" [ngClass]="{ 'selected': isSelected }" (click)="setSelectedTodoItem(todoTaskItem?.id)">
-    <span class="title" [otusTooltip]="'Click on a task to see its description'">{{ todoTaskItem?.title }}</span>
-    <otus-button [button]="deleteButton" [otusTooltip]="'To delete, click the button'"
-        (click)="deleteTodoItem($event, todoTaskItem?.id)"></otus-button>
+<div
+    class="todo-list-item"
+    [ngClass]="{ 'selected': isSelected }"
+    (click)="setSelectedTodoItem(todoTaskItem.id)"
+    (dblclick)="isUpdateTodoTaskTitle = !isUpdateTodoTaskTitle"
+>
+    @if (isUpdateTodoTaskTitle && isSelected) {
+    <mat-card-actions class="todo-list-item__actions">
+        <mat-form-field appearance="outline">
+            <mat-label>Update title</mat-label>
+            <input [(ngModel)]="newTodoTaskTitle" matInput>
+        </mat-form-field>
+        <otus-button
+            [button]="updateButton"
+            [disabled]="!newTodoTaskTitle.trim()"
+            [otusTooltip]="'To update a task, click the button'"
+            (click)="updateTodoTitle(todoTaskItem.id)"
+        ></otus-button>
+    </mat-card-actions>
+    } @else {
+        <span class="title" [otusTooltip]="'Click on a task to see its description'">{{ todoTaskItem.title }}</span>
+        <otus-button
+            [button]="deleteButton"
+            [otusTooltip]="'To delete, click the button'"
+            (click)="deleteTodoItem($event, todoTaskItem.id)"
+        ></otus-button>
+    }
 </div>
