@@ -1,46 +1,54 @@
 @if (!isLoading){
-<div class="todo-list__wrapper">
-    <mat-card class="todo-list__card">
-        <mat-card-header>
-            <mat-card-title class="todo-list__title">{{ todoListTitle }}</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <ul class="todo-list">
-                @for (todoTaskItem of todoTaskItems; track todoTaskItem.id) {
-                <li class="todo-list__task">
-                    <otus-todo-list-item [todoTaskItem]="todoTaskItem" [isSelected]="todoTaskItem.id === selectedItemId"
-                        (deleteToDoTaskItem)="deleteToDoTaskItem($event)"
-                        (setSelectedToDoTaskItem)="setSelectedToDoTaskItem($event)"></otus-todo-list-item>
-                </li>
+    <div class="todo-list__wrapper">
+        <mat-card class="todo-list__card">
+            <mat-card-header>
+                <mat-card-title class="todo-list__title">{{ todoListTitle }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <ul class="todo-list">
+                    @for (todoTaskItem of todoTaskItems; track todoTaskItem.id) {
+                        <li class="todo-list__task">
+                            <otus-todo-list-item
+                                [todoTaskItem]="todoTaskItem"
+                                [isSelected]="todoTaskItem.id === selectedItemId"
+                                (deleteToDoTaskItem)="deleteTodoTaskItem($event)"
+                                (setSelectedToDoTaskItem)="setSelectedToDoTaskItem($event)"
+                                (updateTodoTaskTitle)="updateTodoTaskTitle($event)"
+                            ></otus-todo-list-item>
+                        </li>
+                    }
+                </ul>
+            </mat-card-content>
+            <mat-card-actions class="todo-list__actions">
+                <mat-form-field appearance="outline">
+                    <mat-label>Add your new todo</mat-label>
+                    <input [(ngModel)]="newTodoTaskTitle" matInput>
+                </mat-form-field>
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>Description of the task</mat-label>
+                    <textarea matInput [(ngModel)]="newTodoTaskDescription"></textarea>
+                </mat-form-field>
+                <otus-button
+                    [button]="addButton"
+                    [disabled]="!(newTodoTaskTitle.trim() && newTodoTaskDescription.trim())"
+                    [otusTooltip]="'To add a task, click the button'"
+                    (click)="addTodoTaskItem()"
+                ></otus-button>
+            </mat-card-actions>
+        </mat-card>
+        @if (selectedToDoTaskItem) {
+            <mat-card class="todo-list__details">
+                <mat-card-header>
+                    <mat-card-title class="details__title">{{ selectedToDoTaskItem.title }}</mat-card-title>
+                </mat-card-header>
+                @if (selectedToDoTaskItem.description) {
+                    <mat-card-content>
+                        <p class="details__description">{{ selectedToDoTaskItem.description }}</p>
+                    </mat-card-content>
                 }
-            </ul>
-        </mat-card-content>
-        <mat-card-actions class="todo-list__actions">
-            <mat-form-field appearance="outline">
-                <mat-label>Add your new todo</mat-label>
-                <input [(ngModel)]="newTodoTaskTitle" matInput>
-            </mat-form-field>
-            <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                <mat-label>Description of the task</mat-label>
-                <textarea matInput [(ngModel)]="newTodoTaskDescription"></textarea>
-            </mat-form-field>
-            <otus-button [button]="addButton" [disabled]="!(newTodoTaskTitle.trim() && newTodoTaskDescription.trim())"
-                [otusTooltip]="'To add a task, click the button'" (click)="addToDoTaskItem()"></otus-button>
-        </mat-card-actions>
-    </mat-card>
-    @if (selectedToDoTaskItem) {
-    <mat-card class="todo-list__details">
-        <mat-card-header>
-            <mat-card-title class="details__title">{{ selectedToDoTaskItem.title }}</mat-card-title>
-        </mat-card-header>
-        @if (selectedToDoTaskItem.description) {
-        <mat-card-content>
-            <p class="details__description">{{ selectedToDoTaskItem.description }}</p>
-        </mat-card-content>
+            </mat-card>
         }
-    </mat-card>
-    }
-</div>
+    </div>
 } @else {
-<otus-spinner></otus-spinner>
+    <otus-spinner></otus-spinner>
 }

@@ -10,6 +10,9 @@ import { TodoListItemComponent } from '../todo-list-item/todo-list-item.componen
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { ButtonComponent } from '../button/button.component';
 import { TooltipDirective } from '../../directives/tooltip.directive';
+import { TodoListService } from '../../services/todo-list.service';
+import { ToastService } from '../../services/toast.service';
+import { ToastMessages } from '../../types/toast.messages';
 
 @Component({
     selector: 'otus-todo-list',
@@ -37,11 +40,7 @@ import { TooltipDirective } from '../../directives/tooltip.directive';
 })
 export class TodoListComponent implements OnInit {
     todoListTitle: string = 'ToDoList';
-    todoTaskItems: ITodoTaskItem[] = [
-        { id: 0, title: 'Bye a new gaming laptop', description: 'Description for Bye a new gaming laptop' },
-        { id: 1, title: 'Complete previous task', description: 'Description for Complete previous task' },
-        { id: 2, title: 'Create some angular app', description: 'Description for Create some angular app' },
-    ];
+    todoTaskItems: ITodoTaskItem[] = [];
     newTodoTaskTitle: string = '';
     newTodoTaskDescription: string = '';
     selectedItemId: number | null = null;
@@ -53,19 +52,26 @@ export class TodoListComponent implements OnInit {
         background: '#36E20F',
     }
 
+    constructor(
+        private readonly todoListService: TodoListService,
+        private readonly toastService: ToastService,
+    ) {}
+
     ngOnInit(): void {
-        setTimeout(() => this.isLoading = false, 500)
+        this.getTodoTaskItems();
     }
 
-    deleteToDoTaskItem(taskId: number): void {
-        this.todoTaskItems = this.todoTaskItems.filter(todoTask => todoTask.id !== taskId)
-    }
-
-    addToDoTaskItem(): void {
-        const id = 1 + Math.max(0, ...this.todoTaskItems.map(item => item.id));
-        this.todoTaskItems.push({ id, title: this.newTodoTaskTitle, description: this.newTodoTaskDescription });
+    addTodoTaskItem(): void {
+        this.todoListService.addTodoTaskItem({ title: this.newTodoTaskTitle, description: this.newTodoTaskDescription });
+        this.toastService.showToast(ToastMessages.success);
         this.newTodoTaskTitle = '';
         this.newTodoTaskDescription = '';
+    }
+
+    deleteTodoTaskItem(taskId: number): void {
+        this.todoListService.deleteTodoTaskItem(taskId);
+        this.toastService.showToast(ToastMessages.deleted);
+        this.getTodoTaskItems();
     }
 
     setSelectedToDoTaskItem(taskId: number): void {
@@ -73,6 +79,17 @@ export class TodoListComponent implements OnInit {
     }
 
     get selectedToDoTaskItem(): ITodoTaskItem {
-        return <ITodoTaskItem>this.todoTaskItems.find(todoTask => todoTask.id === this.selectedItemId)
+        return <ITodoTaskItem>this.todoTaskItems.find(todoTask => todoTask.id === this.selectedItemId);
+    }
+
+    updateTodoTaskTitle(updateTodoTask: { id: number, title: string }): void {
+        this.todoListService.updateTodoTaskTitle(updateTodoTask);
+        this.toastService.showToast(ToastMessages.update);
+        this.getTodoTaskItems();
+    }
+
+    getTodoTaskItems() {
+        this.todoTaskItems = this.todoListService.getTodoTaskItems();
+        setTimeout(() => this.isLoading = false, 500);
     }
 }
