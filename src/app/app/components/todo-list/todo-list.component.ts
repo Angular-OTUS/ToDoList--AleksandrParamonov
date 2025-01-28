@@ -55,25 +55,23 @@ export class TodoListComponent implements OnInit {
     constructor(
         private readonly todoListService: TodoListService,
         private readonly toastService: ToastService,
-    ) {
-        this.todoTaskItems = this.todoListService.getTodoTaskItems();
-    }
+    ) {}
 
     ngOnInit(): void {
-        setTimeout(() => this.isLoading = false, 500);
+        this.getTodoTaskItems();
     }
 
     addTodoTaskItem(): void {
         this.todoListService.addTodoTaskItem({ title: this.newTodoTaskTitle, description: this.newTodoTaskDescription });
+        this.toastService.showToast(ToastMessages.success);
         this.newTodoTaskTitle = '';
         this.newTodoTaskDescription = '';
-        this.toastService.showToast(ToastMessages.success);
     }
 
     deleteTodoTaskItem(taskId: number): void {
         this.todoListService.deleteTodoTaskItem(taskId);
-        this.todoTaskItems = this.todoListService.getTodoTaskItems();
         this.toastService.showToast(ToastMessages.deleted);
+        this.getTodoTaskItems();
     }
 
     setSelectedToDoTaskItem(taskId: number): void {
@@ -86,7 +84,12 @@ export class TodoListComponent implements OnInit {
 
     updateTodoTaskTitle(updateTodoTask: { id: number, title: string }): void {
         this.todoListService.updateTodoTaskTitle(updateTodoTask);
-        this.todoTaskItems = this.todoListService.getTodoTaskItems();
         this.toastService.showToast(ToastMessages.update);
+        this.getTodoTaskItems();
+    }
+
+    getTodoTaskItems() {
+        this.todoTaskItems = this.todoListService.getTodoTaskItems();
+        setTimeout(() => this.isLoading = false, 500);
     }
 }
