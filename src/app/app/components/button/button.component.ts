@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { ITodoButton } from "../../interfaces/todo.interface";
 import { NgStyle } from '@angular/common';
+
 @Component({
     selector: 'otus-button',
     standalone: true,
@@ -9,6 +9,7 @@ import { NgStyle } from '@angular/common';
     styleUrl: './button.component.scss'
 })
 export class ButtonComponent {
-    @Input() button?: ITodoButton;
+    @Input() color?: string;
+    @Input() background?: string;
     @Input() disabled?: boolean = false;
 }
