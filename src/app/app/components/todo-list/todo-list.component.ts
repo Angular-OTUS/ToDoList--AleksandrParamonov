@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { takeUntil } from 'rxjs/operators';
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
 import { MatFormField } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -10,6 +11,7 @@ import { TodoCreateItemComponent } from '../todo-create-item/todo-create-item.co
 import { TodoTaskStatusTypes } from '../../types/todo.types';
 import { ToastService } from '../../services/toast.service';
 import { ToastMessages } from '../../types/toast.messages';
+import { DestroyerComponent } from '../../classes/destroyer.class';
 
 @Component({
     selector: 'otus-todo-list',
@@ -28,7 +30,7 @@ import { ToastMessages } from '../../types/toast.messages';
     templateUrl: './todo-list.component.html',
     styleUrl: './todo-list.component.scss'
 })
-export class TodoListComponent implements OnInit {
+export class TodoListComponent extends DestroyerComponent implements OnInit, OnDestroy {
     todoListTitle: string = 'ToDoList';
     todoTaskItems: ITodoTaskItem[] = [];
     todoTaskStatus = TodoTaskStatusTypes;
@@ -41,7 +43,9 @@ export class TodoListComponent implements OnInit {
     constructor(
         private readonly todoListService: TodoListService,
         private readonly toastService: ToastService,
-    ) {}
+    ) {
+        super();
+    }
 
     ngOnInit(): void {
         setTimeout(() => this.isLoading = false, 500);
@@ -58,19 +62,21 @@ export class TodoListComponent implements OnInit {
 
     addTodoTaskItem(newTodoTask: { title: string, description: string }) {
         const id = 1 + Math.max(0, ...this.todoTaskItems.map(todoTask => todoTask.id));
-        this.todoListService.addTaskItem({ id: id ,title: newTodoTask.title, description: newTodoTask.description, status: TodoTaskStatusTypes.inProgress }).subscribe({
-            next: (): void => {
-                this.getTodoTaskItems();
-                this.toastService.showToast(ToastMessages.success);
-            },
-            error: (): void => {
-                this.toastService.showToast(ToastMessages.error);
-            },
-        });
+        this.todoListService.addTaskItem({ id: id ,title: newTodoTask.title, description: newTodoTask.description, status: TodoTaskStatusTypes.inProgress })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+                next: (): void => {
+                    this.getTodoTaskItems();
+                    this.toastService.showToast(ToastMessages.success);
+                },
+                error: (): void => {
+                    this.toastService.showToast(ToastMessages.error);
+                },
+            });
     }
 
     deleteTodoTaskItem(taskId: number): void {
-        this.todoListService.deleteTaskItem(taskId).subscribe({
+        this.todoListService.deleteTaskItem(taskId).pipe(takeUntil(this.destroy$)).subscribe({
             next: (): void => {
                 this.getTodoTaskItems();
                 this.toastService.showToast(ToastMessages.deleted);
@@ -82,7 +88,7 @@ export class TodoListComponent implements OnInit {
     }
 
     updateTodoTaskItem(updateTodoTask: ITodoTaskItem): void {
-        this.todoListService.updateTaskItem(updateTodoTask).subscribe({
+        this.todoListService.updateTaskItem(updateTodoTask).pipe(takeUntil(this.destroy$)).subscribe({
             next: (): void => {
                 this.getTodoTaskItems();
                 this.toastService.showToast(ToastMessages.update);
@@ -95,7 +101,7 @@ export class TodoListComponent implements OnInit {
 
     getTodoTaskItems() {
         this.isLoading = true;
-        this.todoListService.getTaskItems().subscribe({
+        this.todoListService.getTaskItems().pipe(takeUntil(this.destroy$)).subscribe({
             next: (todoTaskItems): void => {
                 this.todoTaskItems = todoTaskItems;
                 this.isLoading = false;
@@ -109,5 +115,9 @@ export class TodoListComponent implements OnInit {
 
     get filteredTodoTaskItems(): ITodoTaskItem[] {
         return this.selectedOption === this.selectOptions[0] ?  this.todoTaskItems : this.todoTaskItems.filter((todoTask) => todoTask.status === this.selectedOption);
+    }
+
+    ngOnDestroy(): void {
+        super.ngOnDestroy();
     }
 }
