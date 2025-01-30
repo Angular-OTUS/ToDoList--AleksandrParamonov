@@ -1,31 +1,30 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { ITodoTaskItem } from '../interfaces/todo.interface';
+import { Observable } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
 })
 
 export class TodoListService {
-	private todoTaskItems: ITodoTaskItem[] = [
-		{ id: 0, title: 'Bye a new gaming laptop', description: 'Description for Bye a new gaming laptop' },
-		{ id: 1, title: 'Complete previous task', description: 'Description for Complete previous task' },
-		{ id: 2, title: 'Create some angular app', description: 'Description for Create some angular app' },
-	];
+	private baseUrl: URL = new URL('http://localhost:3000/todos')
 
-	public addTodoTaskItem(newTodoTask: { title: string; description: string }): void {
-		const id = 1 + Math.max(0, ...this.todoTaskItems.map(todoTask => todoTask.id));
-		this.todoTaskItems.push({ id: id, title: newTodoTask.title, description: newTodoTask.description });
+	constructor(private http: HttpClient) {}
+
+	public addTaskItem(newTodoTask: ITodoTaskItem): Observable<ITodoTaskItem> {
+		return this.http.post<ITodoTaskItem>(this.baseUrl.href, {...newTodoTask, id: newTodoTask.id.toString()});
 	}
 
-	public deleteTodoTaskItem(taskId: number): void {
-		this.todoTaskItems = this.todoTaskItems.filter(todoTask => todoTask.id !== taskId);
+	public deleteTaskItem(taskId: number): Observable<void> {
+		return this.http.delete<void>(`${this.baseUrl.href}/${taskId}`);
 	}
 
-	public updateTodoTaskTitle(updateTodoTask: { id: number, title: string }): void {
-		this.todoTaskItems = this.todoTaskItems.map(todoTask => ({ ...todoTask, title: todoTask.id === updateTodoTask.id ? updateTodoTask.title : todoTask.title }));
+	public updateTaskItem(newTodoTask: ITodoTaskItem): Observable<ITodoTaskItem> {
+		return this.http.put<ITodoTaskItem>(`${this.baseUrl.href}/${newTodoTask.id}`, newTodoTask);
 	}
 
-	public getTodoTaskItems() {
-		return this.todoTaskItems;
+	public getTaskItems(): Observable<ITodoTaskItem[]> {
+		return this.http.get<ITodoTaskItem[]>(this.baseUrl.href);
 	}
 }

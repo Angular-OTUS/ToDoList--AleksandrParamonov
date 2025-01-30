@@ -1,0 +1,22 @@
+<form class="form" [formGroup]="form">
+	<mat-card-actions class="todo-create-item">
+		<mat-form-field appearance="outline">
+			<mat-label>Add your new todo</mat-label>
+			<input formControlName="title" matInput>
+			<mat-error>Invalid Title</mat-error>
+		</mat-form-field>
+		<mat-form-field appearance="outline" subscriptSizing="dynamic">
+			<mat-label>Description of the task</mat-label>
+			<textarea formControlName="description" matInput></textarea>
+			<mat-error>Invalid Description</mat-error>
+		</mat-form-field>
+		<otus-button
+			[color]="addButton.color"
+			[background]="addButton.background"
+			[otusTooltip]="'To add a task, click the button'"
+			(click)="addTodoTask()"
+		>
+			Add task
+		</otus-button>
+	</mat-card-actions>
+</form>

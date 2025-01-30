@@ -1,76 +1,54 @@
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
-import { MatButton, MatMiniFabButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { ITodoButton, ITodoTaskItem } from '../../interfaces/todo.interface';
-import { TodoListItemComponent } from '../todo-list-item/todo-list-item.component';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { takeUntil } from 'rxjs/operators';
+import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
+import { MatFormField } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { SpinnerComponent } from '../spinner/spinner.component';
-import { ButtonComponent } from '../button/button.component';
-import { TooltipDirective } from '../../directives/tooltip.directive';
+import { ITodoTaskItem } from '../../interfaces/todo.interface';
+import { TodoListItemComponent } from '../todo-list-item/todo-list-item.component';
 import { TodoListService } from '../../services/todo-list.service';
+import { TodoCreateItemComponent } from '../todo-create-item/todo-create-item.component';
+import { TodoTaskStatusTypes } from '../../types/todo.types';
 import { ToastService } from '../../services/toast.service';
 import { ToastMessages } from '../../types/toast.messages';
+import { DestroyerComponent } from '../../classes/destroyer.class';
 
 @Component({
     selector: 'otus-todo-list',
     standalone: true,
     imports: [
-        MatCard,
-        MatCardHeader,
-        MatCardTitle,
-        MatCardContent,
-        MatCardActions,
-        MatButton,
-        MatIcon,
-        MatMiniFabButton,
-        MatFormField,
-        MatInput,
-        MatLabel,
-        TodoListItemComponent,
-        FormsModule,
-        SpinnerComponent,
-        ButtonComponent,
-        TooltipDirective
-    ],
+    MatCard,
+    MatCardHeader,
+    MatCardTitle,
+    MatCardContent,
+    MatFormField,
+    MatSelectModule,
+    TodoListItemComponent,
+    SpinnerComponent,
+    TodoCreateItemComponent
+],
     templateUrl: './todo-list.component.html',
     styleUrl: './todo-list.component.scss'
 })
-export class TodoListComponent implements OnInit {
+export class TodoListComponent extends DestroyerComponent implements OnInit, OnDestroy {
     todoListTitle: string = 'ToDoList';
     todoTaskItems: ITodoTaskItem[] = [];
-    newTodoTaskTitle: string = '';
-    newTodoTaskDescription: string = '';
+    todoTaskStatus = TodoTaskStatusTypes;
     selectedItemId: number | null = null;
     isLoading: boolean = true;
 
-    addButton: ITodoButton = {
-        title: 'Add task',
-        color: '#FFFFFF',
-        background: '#36E20F',
-    }
+    selectOptions: string[] = ['All', ...Object.values(TodoTaskStatusTypes)];
+    selectedOption: string = this.selectOptions[0];
 
     constructor(
         private readonly todoListService: TodoListService,
         private readonly toastService: ToastService,
-    ) {}
+    ) {
+        super();
+    }
 
     ngOnInit(): void {
-        this.getTodoTaskItems();
-    }
-
-    addTodoTaskItem(): void {
-        this.todoListService.addTodoTaskItem({ title: this.newTodoTaskTitle, description: this.newTodoTaskDescription });
-        this.toastService.showToast(ToastMessages.success);
-        this.newTodoTaskTitle = '';
-        this.newTodoTaskDescription = '';
-    }
-
-    deleteTodoTaskItem(taskId: number): void {
-        this.todoListService.deleteTodoTaskItem(taskId);
-        this.toastService.showToast(ToastMessages.deleted);
+        setTimeout(() => this.isLoading = false, 500);
         this.getTodoTaskItems();
     }
 
@@ -82,14 +60,64 @@ export class TodoListComponent implements OnInit {
         return <ITodoTaskItem>this.todoTaskItems.find(todoTask => todoTask.id === this.selectedItemId);
     }
 
-    updateTodoTaskTitle(updateTodoTask: { id: number, title: string }): void {
-        this.todoListService.updateTodoTaskTitle(updateTodoTask);
-        this.toastService.showToast(ToastMessages.update);
-        this.getTodoTaskItems();
+    addTodoTaskItem(newTodoTask: { title: string, description: string }) {
+        const id = 1 + Math.max(0, ...this.todoTaskItems.map(todoTask => todoTask.id));
+        this.todoListService.addTaskItem({ id: id ,title: newTodoTask.title, description: newTodoTask.description, status: TodoTaskStatusTypes.inProgress })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+                next: (): void => {
+                    this.getTodoTaskItems();
+                    this.toastService.showToast(ToastMessages.success);
+                },
+                error: (): void => {
+                    this.toastService.showToast(ToastMessages.error);
+                },
+            });
+    }
+
+    deleteTodoTaskItem(taskId: number): void {
+        this.todoListService.deleteTaskItem(taskId).pipe(takeUntil(this.destroy$)).subscribe({
+            next: (): void => {
+                this.getTodoTaskItems();
+                this.toastService.showToast(ToastMessages.deleted);
+            },
+            error: (): void => {
+                this.toastService.showToast(ToastMessages.error);
+            },
+        });
+    }
+
+    updateTodoTaskItem(updateTodoTask: ITodoTaskItem): void {
+        this.todoListService.updateTaskItem(updateTodoTask).pipe(takeUntil(this.destroy$)).subscribe({
+            next: (): void => {
+                this.getTodoTaskItems();
+                this.toastService.showToast(ToastMessages.update);
+            },
+            error: (): void => {
+                this.toastService.showToast(ToastMessages.error);
+            },
+        });
     }
 
     getTodoTaskItems() {
-        this.todoTaskItems = this.todoListService.getTodoTaskItems();
-        setTimeout(() => this.isLoading = false, 500);
+        this.isLoading = true;
+        this.todoListService.getTaskItems().pipe(takeUntil(this.destroy$)).subscribe({
+            next: (todoTaskItems): void => {
+                this.todoTaskItems = todoTaskItems;
+                this.isLoading = false;
+            },
+            error: (): void => {
+                this.isLoading = false;
+                this.toastService.showToast(ToastMessages.error);
+            },
+        });
+    }
+
+    get filteredTodoTaskItems(): ITodoTaskItem[] {
+        return this.selectedOption === this.selectOptions[0] ?  this.todoTaskItems : this.todoTaskItems.filter((todoTask) => todoTask.status === this.selectedOption);
+    }
+
+    ngOnDestroy(): void {
+        super.ngOnDestroy();
     }
 }
