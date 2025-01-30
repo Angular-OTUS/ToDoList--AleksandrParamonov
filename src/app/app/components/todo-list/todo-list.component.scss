@@ -12,39 +12,16 @@
     }
 
     &__wrapper {
-        position: relative;
+        display: flex;
+        gap: 12px;
     }
 
-    &__card, &__details {
+    &__card {
         padding: 24px 24px 0;
         min-width: 480px;
         border-radius: 24px;
         box-shadow: 0 8px 48px rgba(0, 0, 0, 0.08);
         background: #FFFFFF;
-    }
-
-    &__details {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        position: absolute;
-        top: 0;
-        left: calc(100% + 24px);
-        padding: 16px;
-        min-width: 280px;
-
-        .details {
-            &__title {
-                font-size: 16px;
-                font-weight: 500;
-            }
-
-            &__description {
-                font-size: 14px;
-                font-weight: 400;
-                text-wrap: balance;
-            }
-        }
     }
 
     &__title {

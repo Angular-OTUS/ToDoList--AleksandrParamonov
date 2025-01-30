@@ -27,4 +27,8 @@ export class TodoListService {
 	public getTaskItems(): Observable<ITodoTaskItem[]> {
 		return this.http.get<ITodoTaskItem[]>(this.baseUrl.href);
 	}
+
+	public getTaskItemById(taskId: number): Observable<ITodoTaskItem> {
+		return this.http.get<ITodoTaskItem>(`${this.baseUrl.href}/${taskId}`);
+	}
 }
