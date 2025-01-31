@@ -17,7 +17,7 @@
                         <li class="todo-list__task">
                             <otus-todo-list-item
                                 [todoTaskItem]="todoTaskItem"
-                                [isSelected]="todoTaskItem.id === selectedItemId"
+                                [isSelected]="todoTaskItem.id === todoTaskItemId"
                                 [isChecked]="todoTaskItem.status === todoTaskStatus.completed"
                                 (deleteToDoTaskItem)="deleteTodoTaskItem($event)"
                                 (updateTodoTaskItem)="updateTodoTaskItem($event)"
@@ -29,18 +29,7 @@
             </mat-card-content>
             <otus-todo-create-item (addTodoTaskItem)="addTodoTaskItem($event)"></otus-todo-create-item>
         </mat-card>
-        @if (selectedToDoTaskItem) {
-            <mat-card class="todo-list__details">
-                <mat-card-header>
-                    <mat-card-title class="details__title">{{ selectedToDoTaskItem.title }}</mat-card-title>
-                </mat-card-header>
-                @if (selectedToDoTaskItem.description) {
-                    <mat-card-content>
-                        <p class="details__description">{{ selectedToDoTaskItem.description }}</p>
-                    </mat-card-content>
-                }
-            </mat-card>
-        }
+        <router-outlet></router-outlet>
     </div>
 } @else {
     <otus-spinner></otus-spinner>

@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
 import { MatFormField } from '@angular/material/form-field';
@@ -17,6 +18,7 @@ import { DestroyerComponent } from '../../classes/destroyer.class';
     selector: 'otus-todo-list',
     standalone: true,
     imports: [
+    RouterOutlet,
     MatCard,
     MatCardHeader,
     MatCardTitle,
@@ -33,14 +35,16 @@ import { DestroyerComponent } from '../../classes/destroyer.class';
 export class TodoListComponent extends DestroyerComponent implements OnInit, OnDestroy {
     todoListTitle: string = 'ToDoList';
     todoTaskItems: ITodoTaskItem[] = [];
+    todoTaskItemId?: number;
     todoTaskStatus = TodoTaskStatusTypes;
-    selectedItemId: number | null = null;
     isLoading: boolean = true;
 
     selectOptions: string[] = ['All', ...Object.values(TodoTaskStatusTypes)];
     selectedOption: string = this.selectOptions[0];
 
     constructor(
+        private router: Router,
+        private route: ActivatedRoute,
         private readonly todoListService: TodoListService,
         private readonly toastService: ToastService,
     ) {
@@ -50,14 +54,11 @@ export class TodoListComponent extends DestroyerComponent implements OnInit, OnD
     ngOnInit(): void {
         setTimeout(() => this.isLoading = false, 500);
         this.getTodoTaskItems();
+        this.route.firstChild?.params.pipe(takeUntil(this.destroy$)).subscribe(params => this.todoTaskItemId = params['id']);
     }
 
     setSelectedToDoTaskItem(taskId: number): void {
-        this.selectedItemId = taskId;
-    }
-
-    get selectedToDoTaskItem(): ITodoTaskItem {
-        return <ITodoTaskItem>this.todoTaskItems.find(todoTask => todoTask.id === this.selectedItemId);
+        this.router.navigate([`/tasks/${taskId}`]);
     }
 
     addTodoTaskItem(newTodoTask: { title: string, description: string }) {
