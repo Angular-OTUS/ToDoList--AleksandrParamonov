@@ -1,35 +1,39 @@
-@if (!isLoading) {
+@if (!(isLoading$ | async)) {
     <div class="board">
-        <div class="tasks">
-            <h1 class="tasks__title">InProgress</h1>
-            <ul class="tasks__list">
-                @for (todoTaskItem of filteredTodoTaskItems['inProgressTasks']; track todoTaskItem.id) {
-                    <li class="tasks__list-item">
-                        <otus-todo-list-item
-                            [todoTaskItem]="todoTaskItem"
-                            [isChecked]="todoTaskItem.status === todoTaskStatus.completed"
-                            (deleteToDoTaskItem)="deleteTodoTaskItem($event)"
-                            (updateTodoTaskItem)="updateTodoTaskItem($event)"
-                        ></otus-todo-list-item>
-                    </li>
-                }
-            </ul>
-        </div>
-        <div class="tasks">
-            <h1 class="tasks__title">Completed</h1>
-            <ul class="tasks__list">
-                @for (todoTaskItem of filteredTodoTaskItems['completedTasks']; track todoTaskItem.id) {
-                    <li class="tasks__list-item">
-                        <otus-todo-list-item
-                            [todoTaskItem]="todoTaskItem"
-                            [isChecked]="todoTaskItem.status === todoTaskStatus.completed"
-                            (deleteToDoTaskItem)="deleteTodoTaskItem($event)"
-                            (updateTodoTaskItem)="updateTodoTaskItem($event)"
-                        ></otus-todo-list-item>
-                    </li>
-                }
-            </ul>
-        </div>
+        <ng-container *ngIf="(filteredTodoTaskItems$ | async) as filteredTodoTaskItems">
+            <div class="tasks">
+                <h1 class="tasks__title">InProgress</h1>
+                <ul class="tasks__list">
+                    @for (todoTaskItem of filteredTodoTaskItems['inProgressTasks']; track todoTaskItem.id) {
+                        <li class="tasks__list-item">
+                            <otus-todo-list-item
+                                [todoTaskItem]="todoTaskItem"
+                                [isChecked]="todoTaskItem.status === todoTaskStatus.completed"
+                                (deleteToDoTaskItem)="deleteTodoTaskItem($event)"
+                                (updateTodoTaskItem)="updateTodoTaskItem($event)"
+                            ></otus-todo-list-item>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="(filteredTodoTaskItems$ | async) as filteredTodoTaskItems">
+            <div class="tasks">
+                <h1 class="tasks__title">Completed</h1>
+                <ul class="tasks__list">
+                    @for (todoTaskItem of filteredTodoTaskItems['completedTasks']; track todoTaskItem.id) {
+                        <li class="tasks__list-item">
+                            <otus-todo-list-item
+                                [todoTaskItem]="todoTaskItem"
+                                [isChecked]="todoTaskItem.status === todoTaskStatus.completed"
+                                (deleteToDoTaskItem)="deleteTodoTaskItem($event)"
+                                (updateTodoTaskItem)="updateTodoTaskItem($event)"
+                            ></otus-todo-list-item>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </ng-container>
     </div>
 } @else {
     <otus-spinner></otus-spinner>

@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { DestroyerComponent } from '../../classes/destroyer.class';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ITodoTaskItem } from '../../interfaces/todo.interface';
 import { TodoTaskStatusTypes } from '../../types/todo.types';
@@ -13,6 +15,7 @@ import { SpinnerComponent } from '../spinner/spinner.component';
     selector: 'otus-board',
     standalone: true,
     imports: [
+        CommonModule,
         TodoListItemComponent,
         SpinnerComponent,
     ],
@@ -20,12 +23,16 @@ import { SpinnerComponent } from '../spinner/spinner.component';
     styleUrl: './board.component.scss'
 })
 export class BoardComponent extends DestroyerComponent implements OnInit, OnDestroy {
-    filteredTodoTaskItems: { [key: string]: ITodoTaskItem[] } = {
-        inProgressTasks: [],
-        completedTasks: []
-    };
+    filteredTodoTaskItems: BehaviorSubject<{ inProgressTasks: ITodoTaskItem[], completedTasks: ITodoTaskItem[] }> =
+        new BehaviorSubject<{ inProgressTasks: ITodoTaskItem[], completedTasks: ITodoTaskItem[] }>({
+            inProgressTasks: [],
+            completedTasks: []
+        });
+    filteredTodoTaskItems$: Observable<{ inProgressTasks: ITodoTaskItem[], completedTasks: ITodoTaskItem[] }> = this.filteredTodoTaskItems.asObservable();
     todoTaskStatus = TodoTaskStatusTypes;
-    isLoading: boolean = true;
+
+    isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    isLoading$: Observable<boolean> = this.isLoading.asObservable();
 
     constructor(
         private readonly todoListService: TodoListService,
@@ -36,10 +43,6 @@ export class BoardComponent extends DestroyerComponent implements OnInit, OnDest
 
     ngOnInit(): void {
         this.getTodoTaskItems();
-    }
-
-    filterTodoTasks() {
-        
     }
 
     deleteTodoTaskItem(taskId: number): void {
@@ -67,17 +70,17 @@ export class BoardComponent extends DestroyerComponent implements OnInit, OnDest
     }
     
     getTodoTaskItems() {
-        this.isLoading = true;
+        this.isLoading.next(true);
         this.todoListService.getTaskItems().pipe(takeUntil(this.destroy$)).subscribe({
             next: (todoTaskItems): void => {
-                this.filteredTodoTaskItems = {
+                this.filteredTodoTaskItems.next({
                     inProgressTasks: todoTaskItems.filter(task => task.status === TodoTaskStatusTypes.inProgress),
                     completedTasks: todoTaskItems.filter(task => task.status === TodoTaskStatusTypes.completed)
-                };
-                this.isLoading = false;
+                });
+                this.isLoading.next(false);
             },
             error: (): void => {
-                this.isLoading = false;
+                this.isLoading.next(false);
                 this.toastService.showToast(ToastMessages.error);
             },
         });    

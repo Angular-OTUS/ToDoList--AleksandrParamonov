@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Observable, EMPTY, combineLatest } from 'rxjs';
+import { takeUntil, map } from 'rxjs/operators';
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
 import { MatFormField } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -18,6 +20,7 @@ import { DestroyerComponent } from '../../classes/destroyer.class';
     selector: 'otus-todo-list',
     standalone: true,
     imports: [
+    CommonModule,
     RouterOutlet,
     MatCard,
     MatCardHeader,
@@ -34,13 +37,21 @@ import { DestroyerComponent } from '../../classes/destroyer.class';
 })
 export class TodoListComponent extends DestroyerComponent implements OnInit, OnDestroy {
     todoListTitle: string = 'ToDoList';
-    todoTaskItems: ITodoTaskItem[] = [];
+    todoTaskItems: BehaviorSubject<ITodoTaskItem[]> = new BehaviorSubject<ITodoTaskItem[]>([]);
+    todoTaskItems$: Observable<ITodoTaskItem[]> = this.todoTaskItems.asObservable();
     todoTaskItemId?: number;
     todoTaskStatus = TodoTaskStatusTypes;
-    isLoading: boolean = true;
 
-    selectOptions: string[] = ['All', ...Object.values(TodoTaskStatusTypes)];
-    selectedOption: string = this.selectOptions[0];
+    isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    isLoading$: Observable<boolean> = this.isLoading.asObservable();
+
+    selectOptions: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(['All', ...Object.values(TodoTaskStatusTypes)]);
+    selectOptions$ = this.selectOptions.asObservable();
+
+    selectedOption: BehaviorSubject<string> = new BehaviorSubject<string>('All');
+    selectedOption$ = this.selectedOption.asObservable();
+
+    filteredTodoTaskItems$: Observable<ITodoTaskItem[] | null> = EMPTY;
 
     constructor(
         private router: Router,
@@ -53,15 +64,24 @@ export class TodoListComponent extends DestroyerComponent implements OnInit, OnD
 
     ngOnInit(): void {
         this.getTodoTaskItems();
-        this.route.firstChild?.params.pipe(takeUntil(this.destroy$)).subscribe(params => this.todoTaskItemId = params['id']);
+        this.filteredTodoTaskItems$ = combineLatest([this.todoTaskItems$, this.selectedOption$]).pipe(
+            map(([todoTaskItems, selectedOption]) => {
+                return selectedOption === 'All'? todoTaskItems : todoTaskItems.filter((todoTask) => todoTask.status === selectedOption);
+            }),
+        );
+        this.route.firstChild?.params.pipe(takeUntil(this.destroy$)).subscribe(params => this.todoTaskItemId = Number(params['id']));
     }
 
     setSelectedToDoTaskItem(taskId: number): void {
         this.router.navigate([`backlog/task/${taskId}`]);
     }
 
+    setSelectedOption(option: string): void {
+        this.selectedOption.next(option);
+    }
+
     addTodoTaskItem(newTodoTask: { title: string, description: string }) {
-        const id = 1 + Math.max(0, ...this.todoTaskItems.map(todoTask => todoTask.id));
+        const id = 1 + Math.max(0, ...this.todoTaskItems.value.map(todoTask => todoTask.id));
         this.todoListService.addTaskItem({ id: id ,title: newTodoTask.title, description: newTodoTask.description, status: TodoTaskStatusTypes.inProgress })
             .pipe(takeUntil(this.destroy$))
             .subscribe({
@@ -100,21 +120,17 @@ export class TodoListComponent extends DestroyerComponent implements OnInit, OnD
     }
 
     getTodoTaskItems() {
-        this.isLoading = true;
+        this.isLoading.next(true);
         this.todoListService.getTaskItems().pipe(takeUntil(this.destroy$)).subscribe({
             next: (todoTaskItems): void => {
-                this.todoTaskItems = todoTaskItems;
-                this.isLoading = false;
+                this.todoTaskItems.next(todoTaskItems);
+                this.isLoading.next(false);
             },
             error: (): void => {
-                this.isLoading = false;
+                this.isLoading.next(false);
                 this.toastService.showToast(ToastMessages.error);
             },
         });
-    }
-
-    get filteredTodoTaskItems(): ITodoTaskItem[] {
-        return this.selectedOption === this.selectOptions[0] ?  this.todoTaskItems : this.todoTaskItems.filter((todoTask) => todoTask.status === this.selectedOption);
     }
 
     ngOnDestroy(): void {

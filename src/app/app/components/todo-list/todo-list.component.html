@@ -1,32 +1,34 @@
-@if (!isLoading) {
+@if (!(isLoading$ | async)) {
     <div class="todo-list__wrapper">
         <mat-card class="todo-list__card">
             <mat-card-header class="todo-list__header">
                 <mat-card-title class="todo-list__title">{{ todoListTitle }}</mat-card-title>
                 <mat-form-field>
-                    <mat-select [(value)]="selectedOption">
-                        @for (option of selectOptions; track option) {
+                    <mat-select [(value)]="selectedOption.value" (selectionChange)="setSelectedOption($event.value)">
+                        @for (option of selectOptions$ | async; track option) {
                             <mat-option [value]="option">{{ option }}</mat-option>
                         }
                     </mat-select>
                 </mat-form-field>
             </mat-card-header>
-            <mat-card-content>
-                <ul class="todo-list">
-                    @for (todoTaskItem of filteredTodoTaskItems; track todoTaskItem.id) {
-                        <li class="todo-list__task">
-                            <otus-todo-list-item
-                                [todoTaskItem]="todoTaskItem"
-                                [isSelected]="todoTaskItem.id === todoTaskItemId"
-                                [isChecked]="todoTaskItem.status === todoTaskStatus.completed"
-                                (deleteToDoTaskItem)="deleteTodoTaskItem($event)"
-                                (updateTodoTaskItem)="updateTodoTaskItem($event)"
-                                (setSelectedToDoTaskItem)="setSelectedToDoTaskItem($event)"
-                            ></otus-todo-list-item>
-                        </li>
-                    }
-                </ul>
-            </mat-card-content>
+            <ng-container *ngIf="(filteredTodoTaskItems$ | async) as filteredTodoTaskItems">
+                <mat-card-content>
+                    <ul class="todo-list">
+                        @for (todoTaskItem of filteredTodoTaskItems; track todoTaskItem.id) {
+                            <li class="todo-list__task">
+                                <otus-todo-list-item
+                                    [todoTaskItem]="todoTaskItem"
+                                    [isSelected]="todoTaskItem.id === todoTaskItemId"
+                                    [isChecked]="todoTaskItem.status === todoTaskStatus.completed"
+                                    (deleteToDoTaskItem)="deleteTodoTaskItem($event)"
+                                    (updateTodoTaskItem)="updateTodoTaskItem($event)"
+                                    (setSelectedToDoTaskItem)="setSelectedToDoTaskItem($event)"
+                                ></otus-todo-list-item>
+                            </li>
+                        }
+                    </ul>
+                </mat-card-content>
+            </ng-container>
             <otus-todo-create-item (addTodoTaskItem)="addTodoTaskItem($event)"></otus-todo-create-item>
         </mat-card>
         <router-outlet></router-outlet>
