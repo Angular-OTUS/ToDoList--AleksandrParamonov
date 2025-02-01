@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 
 export class TodoListService {
-	private baseUrl: URL = new URL('http://localhost:3000/todos')
+	private baseUrl: URL = new URL('http://localhost:3000/tasks')
 
 	constructor(private http: HttpClient) {}
 

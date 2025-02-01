@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { TodoListComponent } from './app/components/todo-list/todo-list.component';
+
 @Component({
     selector: 'otus-app-root',
     standalone: true,
-    imports: [RouterOutlet, TodoListComponent],
+    imports: [RouterOutlet],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
 })

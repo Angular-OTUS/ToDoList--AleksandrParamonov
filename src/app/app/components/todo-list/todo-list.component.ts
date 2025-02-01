@@ -52,13 +52,12 @@ export class TodoListComponent extends DestroyerComponent implements OnInit, OnD
     }
 
     ngOnInit(): void {
-        setTimeout(() => this.isLoading = false, 500);
         this.getTodoTaskItems();
         this.route.firstChild?.params.pipe(takeUntil(this.destroy$)).subscribe(params => this.todoTaskItemId = params['id']);
     }
 
     setSelectedToDoTaskItem(taskId: number): void {
-        this.router.navigate([`/tasks/${taskId}`]);
+        this.router.navigate([`backlog/task/${taskId}`]);
     }
 
     addTodoTaskItem(newTodoTask: { title: string, description: string }) {
