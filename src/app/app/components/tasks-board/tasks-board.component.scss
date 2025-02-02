@@ -46,6 +46,13 @@
     }
 
     &__main {
+        position: relative;
         padding: 32px;
+    }
+
+    &__language-switcher {
+        position: absolute;
+        top: 32px;
+        right: 32px;
     }
 }

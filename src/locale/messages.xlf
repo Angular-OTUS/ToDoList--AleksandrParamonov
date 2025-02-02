@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="1924797262658924195" datatype="html">
+        <source>InProgress</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/components/board/board.component.html</context>
+          <context context-type="linenumber">5,6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1161299114153631702" datatype="html">
+        <source>Completed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/components/board/board.component.html</context>
+          <context context-type="linenumber">22,23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1398296832117533804" datatype="html">
+        <source>TasksBoard</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/components/tasks-board/tasks-board.component.html</context>
+          <context context-type="linenumber">3,4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5194912054053114732" datatype="html">
+        <source>Backlog</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/components/tasks-board/tasks-board.component.html</context>
+          <context context-type="linenumber">10,11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="467515590191938529" datatype="html">
+        <source>Board</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/components/tasks-board/tasks-board.component.html</context>
+          <context context-type="linenumber">13,14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6783667173167343542" datatype="html">
+        <source>Language switcher</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/components/tasks-board/tasks-board.component.html</context>
+          <context context-type="linenumber">23,24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="25761743931449457" datatype="html">
+        <source>Add your new todo</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/components/todo-create-item/todo-create-item.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6927921317142488858" datatype="html">
+        <source>Invalid Title</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/components/todo-create-item/todo-create-item.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7922082284244499633" datatype="html">
+        <source>Description of the task</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/components/todo-create-item/todo-create-item.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1322728046930366866" datatype="html">
+        <source>Invalid Description</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/components/todo-create-item/todo-create-item.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2375161396593426452" datatype="html">
+        <source> Add task </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/components/todo-create-item/todo-create-item.component.html</context>
+          <context context-type="linenumber">20,21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2649252321173430744" datatype="html">
+        <source>Not Found</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/components/todo-item-view/todo-item-view.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2020626025284801984" datatype="html">
+        <source>Task with this ID not found</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/components/todo-item-view/todo-item-view.component.html</context>
+          <context context-type="linenumber">24,25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2592690450389009216" datatype="html">
+        <source> Update </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/components/todo-list-item/todo-list-item.component.html</context>
+          <context context-type="linenumber">21,22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6660925946511264619" datatype="html">
+        <source> Delete </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/components/todo-list-item/todo-list-item.component.html</context>
+          <context context-type="linenumber">35,36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6066981913224693748" datatype="html">
+        <source>ToDoList</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/components/todo-list/todo-list.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

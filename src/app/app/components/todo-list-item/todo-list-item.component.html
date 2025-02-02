@@ -11,6 +11,7 @@
 					<input [(ngModel)]="newTodoTaskTitle" matInput>
 			</mat-form-field>
 			<otus-button
+					i18n
 					[color]="updateButton.color"
 					[background]="updateButton.background"
 					[disabled]="!newTodoTaskTitle.trim()"
@@ -25,6 +26,7 @@
 		<div class="todo-list-item__display">
 			<mat-checkbox [checked]="isChecked" (click)="updateTodoTaskStatus($event, todoTaskItem)"></mat-checkbox>
 			<otus-button
+				i18n
 				[color]="deleteButton.color"
 				[background]="deleteButton.background"
 				[otusTooltip]="'To delete, click the button'"
