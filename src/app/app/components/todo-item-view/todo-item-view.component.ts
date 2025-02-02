@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { DestroyerComponent } from '../../classes/destroyer.class';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { ITodoTaskItem } from '../../interfaces/todo.interface';
 import { TodoListService } from '../../services/todo-list.service';
@@ -18,13 +20,16 @@ import { takeUntil } from 'rxjs/operators';
         MatCardTitle,
         MatCardContent,
         SpinnerComponent,
+        CommonModule,
     ],
     templateUrl: './todo-item-view.component.html',
     styleUrl: './todo-item-view.component.scss'
 })
 export class TodoItemViewComponent extends DestroyerComponent implements OnInit, OnDestroy {
-    todoTaskItem?: ITodoTaskItem;
-    isLoading: boolean = false;
+    todoTaskItem: BehaviorSubject<ITodoTaskItem | null> = new BehaviorSubject<ITodoTaskItem | null>(null);
+    todoTaskItem$: Observable<ITodoTaskItem | null> = this.todoTaskItem.asObservable();
+    isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    isLoading$: Observable<boolean> = this.isLoading.asObservable();
     
     constructor(
         private route: ActivatedRoute,
@@ -41,14 +46,14 @@ export class TodoItemViewComponent extends DestroyerComponent implements OnInit,
     }
 
     getTodoTask(todoTaskId: number) {
-        this.isLoading = true;
+        this.isLoading.next(true);
         this.todoListService.getTaskItemById(todoTaskId).pipe(takeUntil(this.destroy$)).subscribe({
             next: (todoTask): void => {
-                this.todoTaskItem = todoTask;
-                this.isLoading = false;
+                this.todoTaskItem.next(todoTask);
+                this.isLoading.next(false);
             },
             error: (): void => {
-                this.isLoading = false;
+                this.isLoading.next(false);
                 this.toastService.showToast(ToastMessages.error);
             },
         });

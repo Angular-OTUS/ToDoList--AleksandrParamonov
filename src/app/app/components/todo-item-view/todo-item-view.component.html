@@ -1,27 +1,27 @@
-<div class="todo-item-view" [class.loading]="isLoading">
-	@if (!isLoading) {
-		@if (todoTaskItem) {
+<div class="todo-item-view" [class.loading]="(isLoading$ | async)">
+	@if (!(isLoading$ | async)) {
+		<ng-container *ngIf="todoTaskItem$ | async as todoTaskItem; else notFound">
 			<mat-card class="todo-task">
 				<mat-card-header>
 					<mat-card-title class="todo-task__title">{{ todoTaskItem.title }}</mat-card-title>
 				</mat-card-header>
-				@if (todoTaskItem.description) {
-					<mat-card-content>
-						<p class="todo-task__description">{{ todoTaskItem.description }}</p>
-					</mat-card-content>
-				}
-			</mat-card>
-		} @else {
-			<mat-card class="todo-task">
-				<mat-card-header>
-					<mat-card-title class="todo-task__title">Not Found</mat-card-title>
-				</mat-card-header>
-				<mat-card-content>
-					<p class="todo-task__description">Task with this ID not found</p>
+				<mat-card-content *ngIf="todoTaskItem?.description">
+					<p class="todo-task__description">{{ todoTaskItem.description }}</p>
 				</mat-card-content>
 			</mat-card>
-		}
+		</ng-container>
 	} @else {
 		<otus-spinner></otus-spinner>
 	}
 </div>
+
+<ng-template #notFound>
+	<mat-card class="todo-task">
+		<mat-card-header>
+			<mat-card-title class="todo-task__title">Not Found</mat-card-title>
+		</mat-card-header>
+		<mat-card-content>
+			<p class="todo-task__description">Task with this ID not found</p>
+		</mat-card-content>
+	</mat-card>
+</ng-template>

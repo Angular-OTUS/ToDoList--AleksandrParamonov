@@ -1,7 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TodoListService } from '../../services/todo-list.service';
-import { ToastService } from '../../services/toast.service';
 import { ITodoButton } from '../../interfaces/todo.interface';
 import { ButtonComponent } from '../button/button.component';
 import { TooltipDirective } from '../../directives/tooltip.directive';
@@ -37,8 +35,6 @@ export class TodoCreateItemComponent {
 
     constructor(
         private readonly formBuilder: FormBuilder,
-        private readonly todoListService: TodoListService,
-        private readonly toastService: ToastService,
     ) {
         this.form = this.formBuilder.group({
             title: [null, [Validators.required]],

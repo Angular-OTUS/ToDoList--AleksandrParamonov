@@ -1,0 +1,23 @@
+<div class="tasks-board">
+    <aside class="tasks-board__sidebar">
+        <h1 class="tasks-board__title">TasksBoard</h1>
+        <nav class="tasks-board__nav">
+            <ul class="tasks-board__nav-links">
+                <li class="tasks-board__nav-link"
+                    [routerLinkActive]="'tasks-board__nav-link--active'"
+                    [routerLinkActiveOptions] = "{ exact: false }"
+                >
+                    <a [routerLink]="['/backlog']" class="link">Backlog</a>
+                </li>
+                <li class="tasks-board__nav-link" [routerLinkActive]="'tasks-board__nav-link--active'">
+                    <a [routerLink]="['/board']" class="link">Board</a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+    <main class="tasks-board__main">
+        <div class="tasks-board__content">
+            <router-outlet></router-outlet>
+        </div>
+    </main>
+</div>

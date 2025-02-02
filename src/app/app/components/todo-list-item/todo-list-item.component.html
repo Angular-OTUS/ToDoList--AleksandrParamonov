@@ -22,14 +22,16 @@
 		</mat-card-actions>
    } @else {
    	<span class="title" [otusTooltip]="'Click on a task to see its description'">{{ todoTaskItem.title }}</span>
-      <mat-checkbox [checked]="isChecked" (click)="updateTodoTaskStatus($event, todoTaskItem)">Done</mat-checkbox>
-		<otus-button
-			[color]="deleteButton.color"
-			[background]="deleteButton.background"
-         [otusTooltip]="'To delete, click the button'"
-         (click)="deleteTodoItem($event, todoTaskItem.id)"
-      >
-			Delete
-		</otus-button>
+		<div class="todo-list-item__display">
+			<mat-checkbox [checked]="isChecked" (click)="updateTodoTaskStatus($event, todoTaskItem)"></mat-checkbox>
+			<otus-button
+				[color]="deleteButton.color"
+				[background]="deleteButton.background"
+				[otusTooltip]="'To delete, click the button'"
+				(click)="deleteTodoItem($event, todoTaskItem.id)"
+			>
+				Delete
+			</otus-button>
+		</div>
    }
 </div>
