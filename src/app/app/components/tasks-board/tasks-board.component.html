@@ -1,21 +1,39 @@
 <div class="tasks-board">
     <aside class="tasks-board__sidebar">
-        <h1 class="tasks-board__title">TasksBoard</h1>
+        <h1 class="tasks-board__title" i18n>TasksBoard</h1>
         <nav class="tasks-board__nav">
             <ul class="tasks-board__nav-links">
                 <li class="tasks-board__nav-link"
                     [routerLinkActive]="'tasks-board__nav-link--active'"
                     [routerLinkActiveOptions] = "{ exact: false }"
                 >
-                    <a [routerLink]="['/backlog']" class="link">Backlog</a>
+                    <a [routerLink]="['/backlog']" class="link" i18n>Backlog</a>
                 </li>
                 <li class="tasks-board__nav-link" [routerLinkActive]="'tasks-board__nav-link--active'">
-                    <a [routerLink]="['/board']" class="link">Board</a>
+                    <a [routerLink]="['/board']" class="link" i18n>Board</a>
                 </li>
             </ul>
         </nav>
     </aside>
     <main class="tasks-board__main">
+        <div class="tasks-board__language-switcher">
+            <mat-button-toggle-group
+                class="language-toggle-group"
+                name="languageSwitcher"
+                aria-label="Language switcher"
+                i18n-aria-label
+                [value]="currentLocale"
+            >
+                @for (locale of locales; track locale) {
+                    <mat-button-toggle
+                        (change)="onChange($event.value)"
+                        [value]="locale.id"
+                    >
+                        {{ locale.name }}
+                    </mat-button-toggle>
+                }
+            </mat-button-toggle-group>
+        </div>
         <div class="tasks-board__content">
             <router-outlet></router-outlet>
         </div>

@@ -1,0 +1,29 @@
+.todo-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+  padding: 12px 16px;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  background: #1b1234;
+  transition-property: all;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
+}
+.todo-list-item:hover {
+  cursor: pointer;
+  transform: translateY(-0.25rem);
+}
+.todo-list-item__actions {
+  gap: 24px;
+  padding: 0;
+}
+.todo-list-item__diplay {
+  display: flex;
+  gap: 24px;
+}
+
+.selected {
+  background-color: aqua;
+}

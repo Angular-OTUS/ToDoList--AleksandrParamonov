@@ -1,0 +1,8 @@
+.todo-create-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-top: 16px;
+  padding: 16px;
+}

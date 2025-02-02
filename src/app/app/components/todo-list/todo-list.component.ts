@@ -36,7 +36,6 @@ import { DestroyerComponent } from '../../classes/destroyer.class';
     styleUrl: './todo-list.component.scss'
 })
 export class TodoListComponent extends DestroyerComponent implements OnInit, OnDestroy {
-    todoListTitle: string = 'ToDoList';
     todoTaskItems: BehaviorSubject<ITodoTaskItem[]> = new BehaviorSubject<ITodoTaskItem[]>([]);
     todoTaskItems$: Observable<ITodoTaskItem[]> = this.todoTaskItems.asObservable();
     todoTaskItemId?: number;

@@ -1,0 +1,48 @@
+.tasks-board {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  height: 100vh;
+}
+.tasks-board__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 32px;
+  background: #1b1234;
+}
+.tasks-board__nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.tasks-board__nav-link {
+  display: inline-flex;
+  padding: 16px;
+  background: #131327;
+  border-radius: 12px;
+  transition: opacity 0.3 ease;
+}
+.tasks-board__nav-link:hover {
+  opacity: 0.8;
+}
+.tasks-board__nav-link--active {
+  background: #6a5acd;
+}
+.tasks-board__nav-link .link {
+  width: 100%;
+  text-decoration: none;
+  font-size: 20px;
+  color: white;
+}
+.tasks-board__main {
+  position: relative;
+  padding: 32px;
+}
+.tasks-board__language-switcher {
+  position: absolute;
+  top: 32px;
+  right: 32px;
+}

@@ -2,7 +2,7 @@
     <div class="todo-list__wrapper">
         <mat-card class="todo-list__card">
             <mat-card-header class="todo-list__header">
-                <mat-card-title class="todo-list__title">{{ todoListTitle }}</mat-card-title>
+                <mat-card-title class="todo-list__title" i18n>ToDoList</mat-card-title>
                 <mat-form-field>
                     <mat-select [(value)]="selectedOption.value" (selectionChange)="setSelectedOption($event.value)">
                         @for (option of selectOptions$ | async; track option) {
